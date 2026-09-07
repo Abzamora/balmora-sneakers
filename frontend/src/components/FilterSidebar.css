@@ -1,0 +1,74 @@
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-right: 1rem;
+}
+
+.filters__group {
+  border-bottom: var(--border-hairline);
+  padding-bottom: 1rem;
+}
+
+.filters__title {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  margin: 0 0 0.6rem;
+}
+
+.filters__option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  padding: 0.25rem 0;
+  cursor: pointer;
+}
+
+.filters__chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.filters__chip {
+  border: var(--border-hairline);
+  background: transparent;
+  color: var(--color-text);
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.filters__chip.is-active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #15140f;
+  font-weight: 700;
+}
+
+.filters__price-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filters__price-row input {
+  width: 100%;
+  min-width: 0;
+  background: var(--color-surface-alt);
+  border: var(--border-hairline);
+  color: var(--color-text);
+  padding: 0.4rem 0.5rem;
+  border-radius: var(--radius-sm);
+}
+
+/* Mobile: filters collapse into a drawer triggered from Catalog.jsx */
+@media (max-width: 860px) {
+  .filters {
+    padding-right: 0;
+  }
+}

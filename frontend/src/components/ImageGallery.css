@@ -1,0 +1,77 @@
+.gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.gallery__frame {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--color-surface-alt);
+  border: var(--border-hairline);
+  cursor: zoom-in;
+}
+
+.gallery__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gallery__zoom-layer {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  pointer-events: none;
+}
+
+.gallery__thumbs {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.gallery__thumb {
+  flex: 0 0 auto;
+  width: 68px;
+  border: var(--border-hairline);
+  background: var(--color-surface);
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.gallery__thumb img {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  opacity: 0.7;
+}
+
+.gallery__thumb.is-active {
+  border-color: var(--color-accent);
+}
+.gallery__thumb.is-active img { opacity: 1; }
+
+.gallery__thumb-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: 0.6rem;
+  text-transform: capitalize;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 0.1rem 0;
+}
+
+/* On touch devices, drop the hover-zoom layer entirely and rely on native
+   pinch-zoom / tap-to-fullscreen instead — hover math doesn't apply. */
+@media (hover: none) {
+  .gallery__zoom-layer { display: none; }
+  .gallery__frame { cursor: default; }
+}
