@@ -1,9 +1,9 @@
-import { useEffect, useState, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { fetchProducts, fetchFacets } from '../api/api';
-import ProductCard from '../components/ProductCard';
-import FilterSidebar from '../components/FilterSidebar';
-import './Catalog.css';
+import { useEffect, useState, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
+import { fetchProducts, fetchFacets } from "../api/api";
+import ProductCard from "../components/ProductCard";
+import FilterSidebar from "../components/FilterSidebar";
+import "./Catalog.css";
 
 /**
  * The filter state IS the URL query string, so filtered views are
@@ -17,7 +17,11 @@ export default function Catalog() {
   const filters = Object.fromEntries(searchParams.entries());
 
   const [facets, setFacets] = useState(null);
-  const [data, setData] = useState({ products: [], totalPages: 1, totalResults: 0 });
+  const [data, setData] = useState({
+    products: [],
+    totalPages: 1,
+    totalResults: 0,
+  });
   const [loading, setLoading] = useState(true);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
@@ -40,33 +44,51 @@ export default function Catalog() {
   }, [load]);
 
   function handleFilterChange(next) {
-    const cleaned = Object.fromEntries(Object.entries(next).filter(([, v]) => v !== '' && v != null));
+    const cleaned = Object.fromEntries(
+      Object.entries(next).filter(([, v]) => v !== "" && v != null),
+    );
     setSearchParams(cleaned);
   }
 
   return (
     <div className="container catalog">
       <div className="catalog__header">
-        <h1>El Catálogo</h1>
-        <p>{loading ? 'Loading…' : `${data.totalResults} zapatillas encontradas`}</p>
-        <button className="btn btn-outline catalog__filter-toggle" onClick={() => setMobileFiltersOpen(true)}>
+        <h1>Balmora - Sneakers</h1>
+        <p>
+          {loading ? "Loading…" : `${data.totalResults} zapatillas encontradas`}
+        </p>
+        <button
+          className="btn btn-outline catalog__filter-toggle"
+          onClick={() => setMobileFiltersOpen(true)}
+        >
           Filtros
         </button>
       </div>
 
       <div className="catalog__layout">
-        <div className={`catalog__sidebar ${mobileFiltersOpen ? 'is-open' : ''}`}>
+        <div
+          className={`catalog__sidebar ${mobileFiltersOpen ? "is-open" : ""}`}
+        >
           <div className="catalog__sidebar-header">
             <span>Filtros</span>
-            <button className="btn btn-outline" onClick={() => setMobileFiltersOpen(false)}>
+            <button
+              className="btn btn-outline"
+              onClick={() => setMobileFiltersOpen(false)}
+            >
               Cerrar
             </button>
           </div>
-          <FilterSidebar facets={facets} filters={filters} onChange={handleFilterChange} />
+          <FilterSidebar
+            facets={facets}
+            filters={filters}
+            onChange={handleFilterChange}
+          />
         </div>
 
         <div className="catalog__grid">
-          {!loading && data.products.length === 0 && <p>No se encontraron zapatillas que coincidan con esos filtros.</p>}
+          {!loading && data.products.length === 0 && (
+            <p>No se encontraron zapatillas que coincidan con esos filtros.</p>
+          )}
           {data.products.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 /**
  * A single product photo. "angle" lets the frontend group and order the
@@ -10,12 +10,21 @@ const imageSchema = new mongoose.Schema(
     publicId: { type: String, required: true }, // Cloudinary public_id, needed to delete on removal
     angle: {
       type: String,
-      enum: ['front', 'side', 'back', 'top', 'sole', 'detail', 'lifestyle', 'box'],
-      default: 'front',
+      enum: [
+        "front",
+        "side",
+        "back",
+        "top",
+        "sole",
+        "detail",
+        "lifestyle",
+        "box",
+      ],
+      default: "front",
     },
     isPrimary: { type: Boolean, default: false }, // shown on catalog cards
   },
-  { _id: false }
+  { _id: false },
 );
 
 /**
@@ -27,24 +36,48 @@ const variantSchema = new mongoose.Schema(
     size: { type: String, required: true }, // e.g. "US 9", "EU 42"
     stock: { type: Number, required: true, min: 0, default: 0 },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const productSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true, index: true },
-    slug: { type: String, required: true, unique: true, lowercase: true, index: true },
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      index: true,
+    },
     sku: { type: String, required: true, unique: true }, // shown in the WhatsApp message
     brand: {
       type: String,
       required: true,
-      enum: ['Nike', 'Adidas', 'Jordan', 'New Balance', 'Puma', 'Reebok', 'Vans', 'Converse', 'Other'],
+      enum: [
+        "Nike",
+        "Adidas",
+        "Jordan",
+        "New Balance",
+        "Puma",
+        "Reebok",
+        "Vans",
+        "Converse",
+        "Other",
+      ],
       index: true,
     },
     style: {
       type: String,
       required: true,
-      enum: ['Running', 'Basketball', 'Lifestyle', 'Skate', 'Training', 'Retro', 'Boots'],
+      enum: [
+        "Running",
+        "Basketball",
+        "Lifestyle",
+        "Skate",
+        "Training",
+        "Retro",
+        "Boots",
+      ],
       index: true,
     },
     description: { type: String, required: true },
@@ -54,22 +87,22 @@ const productSchema = new mongoose.Schema(
     variants: { type: [variantSchema], default: [] },
     images: {
       type: [imageSchema],
-      validate: [(arr) => arr.length > 0, 'A product needs at least one image'],
+      default: [],
     },
     isFeatured: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true, index: true }, // soft delete / draft toggle
     totalStock: { type: Number, default: 0 }, // denormalized sum of variants.stock, kept in sync via pre-save hook
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Full-text search across name, brand and description for the search bar
-productSchema.index({ name: 'text', description: 'text' });
+productSchema.index({ name: "text", description: "text" });
 
 // Keep totalStock accurate without requiring the client to compute it
-productSchema.pre('save', function (next) {
+productSchema.pre("save", function (next) {
   this.totalStock = this.variants.reduce((sum, v) => sum + v.stock, 0);
   next();
 });
 
-module.exports = mongoose.model('Product', productSchema);
+module.exports = mongoose.model("Product", productSchema);

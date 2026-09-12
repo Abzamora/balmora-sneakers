@@ -9,17 +9,29 @@ const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER;
  * ready-to-purchase intent). Two distinct messages per the spec's request
  * for two differently-worded CTAs.
  */
-function buildWhatsAppLink({ name, sku, size, variant }) {
+function buildWhatsAppLink({ name, sku, size, variant, url }) {
   const messages = {
-    inquire: `Hi! I'd like more information about the ${name} (SKU: ${sku}). Is it available?`,
-    buy: `Hi! I want to buy the ${name} (SKU: ${sku})${size ? `, size ${size}` : ''}. How can I complete the purchase?`,
+    inquire: `¡Hola! Me gustaría más información sobre el ${name} (SKU: ${sku}). ¿Está disponible?\n${url}`,
+    buy: `¡Hola! Quiero comprar el ${name} (SKU: ${sku})${size ? `, talla ${size}` : ""}. ¿Cómo puedo completar la compra?\n${url}`,
   };
   const text = encodeURIComponent(messages[variant] || messages.inquire);
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`;
 }
 
-export default function WhatsAppButton({ product, size, variant = 'inquire', label }) {
-  const href = buildWhatsAppLink({ name: product.name, sku: product.sku, size, variant });
+export default function WhatsAppButton({
+  product,
+  size,
+  variant = "inquire",
+  label,
+}) {
+  const productUrl = `${window.location.origin}/sneakers/${product.slug}`;
+  const href = buildWhatsAppLink({
+    name: product.name,
+    sku: product.sku,
+    size,
+    variant,
+    url: productUrl,
+  });
 
   return (
     <a
@@ -30,7 +42,7 @@ export default function WhatsAppButton({ product, size, variant = 'inquire', lab
       onClick={(e) => e.stopPropagation()} // don't also trigger a parent card's onClick
       aria-label={`Contact via WhatsApp about ${product.name}`}
     >
-      {label || (variant === 'buy' ? 'Buy via WhatsApp' : 'Ask on WhatsApp')}
+      {label || (variant === "buy" ? "Buy via WhatsApp" : "Ask on WhatsApp")}
     </a>
   );
 }

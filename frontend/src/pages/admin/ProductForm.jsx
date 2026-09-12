@@ -1,35 +1,62 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   fetchAllProductsAdmin,
   createProduct,
   updateProduct,
   uploadProductImages,
   deleteProductImage,
-} from '../../api/api';
-import './admin.css';
+} from "../../api/api";
+import "./admin.css";
 
-const BRANDS = ['Nike', 'Adidas', 'Jordan', 'New Balance', 'Puma', 'Reebok', 'Vans', 'Converse', 'Other'];
-const STYLES = ['Running', 'Basketball', 'Lifestyle', 'Skate', 'Training', 'Retro', 'Boots'];
-const ANGLES = ['front', 'side', 'back', 'top', 'sole', 'detail', 'lifestyle', 'box'];
+const BRANDS = [
+  "Nike",
+  "Adidas",
+  "Jordan",
+  "New Balance",
+  "Puma",
+  "Reebok",
+  "Vans",
+  "Converse",
+  "Other",
+];
+const STYLES = [
+  "Running",
+  "Basketball",
+  "Lifestyle",
+  "Skate",
+  "Training",
+  "Retro",
+  "Boots",
+];
+const ANGLES = [
+  "front",
+  "side",
+  "back",
+  "top",
+  "sole",
+  "detail",
+  "lifestyle",
+  "box",
+];
 
 const emptyProduct = {
-  name: '',
-  sku: '',
+  name: "",
+  sku: "",
   brand: BRANDS[0],
   style: STYLES[0],
-  description: '',
-  price: '',
-  compareAtPrice: '',
-  colors: [''],
-  variants: [{ size: '', stock: 0 }],
+  description: "",
+  price: "",
+  compareAtPrice: "",
+  colors: [""],
+  variants: [{ size: "", stock: 0 }],
   isFeatured: false,
   isActive: true,
 };
 
 export default function ProductForm() {
   const { id } = useParams(); // "new" or a Mongo _id
-  const isNew = id === 'new';
+  const isNew = id === "new";
   const navigate = useNavigate();
 
   const [form, setForm] = useState(emptyProduct);
@@ -40,12 +67,24 @@ export default function ProductForm() {
 
   useEffect(() => {
     if (isNew) return;
-    // The admin list endpoint already returns full documents; reuse it
-    // rather than adding a dedicated GET /:id admin route.
     fetchAllProductsAdmin().then((all) => {
       const existing = all.find((p) => p._id === id);
       if (existing) {
-        setForm({ ...existing, colors: existing.colors.length ? existing.colors : [''] });
+        setForm({
+          name: existing.name,
+          sku: existing.sku,
+          brand: existing.brand,
+          style: existing.style,
+          description: existing.description,
+          price: existing.price,
+          compareAtPrice: existing.compareAtPrice || "",
+          colors: existing.colors.length ? existing.colors : [""],
+          variants: existing.variants.length
+            ? existing.variants
+            : [{ size: "", stock: 0 }],
+          isFeatured: existing.isFeatured,
+          isActive: existing.isActive,
+        });
         setImages(existing.images);
       }
     });
@@ -62,7 +101,10 @@ export default function ProductForm() {
   }
 
   function addVariantRow() {
-    setForm((f) => ({ ...f, variants: [...f.variants, { size: '', stock: 0 }] }));
+    setForm((f) => ({
+      ...f,
+      variants: [...f.variants, { size: "", stock: 0 }],
+    }));
   }
 
   function updateColor(index, value) {
@@ -78,7 +120,9 @@ export default function ProductForm() {
       const payload = {
         ...form,
         price: Number(form.price),
-        compareAtPrice: form.compareAtPrice ? Number(form.compareAtPrice) : undefined,
+        compareAtPrice: form.compareAtPrice
+          ? Number(form.compareAtPrice)
+          : undefined,
         colors: form.colors.filter(Boolean),
         variants: form.variants
           .filter((v) => v.size)
@@ -97,21 +141,28 @@ export default function ProductForm() {
       // Flush any images staged before the product existed / since the last save
       if (pendingFiles.length > 0) {
         const formData = new FormData();
-        pendingFiles.forEach((pf) => formData.append('images', pf.file));
-        formData.append('angles', JSON.stringify(pendingFiles.map((pf) => pf.angle)));
+        pendingFiles.forEach((pf) => formData.append("images", pf.file));
+        formData.append(
+          "angles",
+          JSON.stringify(pendingFiles.map((pf) => pf.angle)),
+        );
         const updated = await uploadProductImages(productId, formData);
         setImages(updated.images);
         setPendingFiles([]);
       }
 
-      navigate('/admin');
+      navigate("/admin");
     } finally {
       setSaving(false);
     }
   }
 
   function stageFiles(fileList) {
-    const files = Array.from(fileList).map((file) => ({ file, angle: 'front', preview: URL.createObjectURL(file) }));
+    const files = Array.from(fileList).map((file) => ({
+      file,
+      angle: "front",
+      preview: URL.createObjectURL(file),
+    }));
     setPendingFiles((prev) => [...prev, ...files]);
   }
 
@@ -122,22 +173,35 @@ export default function ProductForm() {
 
   return (
     <form className="container product-form" onSubmit={handleSubmit}>
-      <h1>{isNew ? 'New sneaker' : 'Edit sneaker'}</h1>
+      <h1>{isNew ? "New sneaker" : "Edit sneaker"}</h1>
 
       <label>
         Name
-        <input value={form.name} onChange={(e) => updateField('name', e.target.value)} required />
+        <input
+          value={form.name}
+          onChange={(e) => updateField("name", e.target.value)}
+          required
+        />
       </label>
 
       <div className="product-form__row">
         <label>
           SKU
-          <input value={form.sku} onChange={(e) => updateField('sku', e.target.value)} required />
+          <input
+            value={form.sku}
+            onChange={(e) => updateField("sku", e.target.value)}
+            required
+          />
         </label>
         <label>
           Brand
-          <select value={form.brand} onChange={(e) => updateField('brand', e.target.value)}>
-            {BRANDS.map((b) => <option key={b}>{b}</option>)}
+          <select
+            value={form.brand}
+            onChange={(e) => updateField("brand", e.target.value)}
+          >
+            {BRANDS.map((b) => (
+              <option key={b}>{b}</option>
+            ))}
           </select>
         </label>
       </div>
@@ -145,32 +209,62 @@ export default function ProductForm() {
       <div className="product-form__row">
         <label>
           Style
-          <select value={form.style} onChange={(e) => updateField('style', e.target.value)}>
-            {STYLES.map((s) => <option key={s}>{s}</option>)}
+          <select
+            value={form.style}
+            onChange={(e) => updateField("style", e.target.value)}
+          >
+            {STYLES.map((s) => (
+              <option key={s}>{s}</option>
+            ))}
           </select>
         </label>
         <label>
           Price (BOB)
-          <input type="number" step="0.01" value={form.price} onChange={(e) => updateField('price', e.target.value)} required />
+          <input
+            type="number"
+            step="0.01"
+            value={form.price}
+            onChange={(e) => updateField("price", e.target.value)}
+            required
+          />
         </label>
       </div>
 
       <label>
         Compare-at price (optional, shows a "Sale" badge)
-        <input type="number" step="0.01" value={form.compareAtPrice || ''} onChange={(e) => updateField('compareAtPrice', e.target.value)} />
+        <input
+          type="number"
+          step="0.01"
+          value={form.compareAtPrice || ""}
+          onChange={(e) => updateField("compareAtPrice", e.target.value)}
+        />
       </label>
 
       <label>
         Description
-        <textarea rows={4} value={form.description} onChange={(e) => updateField('description', e.target.value)} required />
+        <textarea
+          rows={4}
+          value={form.description}
+          onChange={(e) => updateField("description", e.target.value)}
+          required
+        />
       </label>
 
       <fieldset>
         <legend>Colorways</legend>
         {form.colors.map((c, i) => (
-          <input key={i} value={c} onChange={(e) => updateColor(i, e.target.value)} placeholder="e.g. Triple Black" />
+          <input
+            key={i}
+            value={c}
+            onChange={(e) => updateColor(i, e.target.value)}
+            placeholder="e.g. Triple Black"
+          />
         ))}
-        <button type="button" className="btn btn-outline" onClick={() => setForm((f) => ({ ...f, colors: [...f.colors, ''] }))}>
+        <button
+          type="button"
+          className="btn btn-outline"
+          onClick={() => setForm((f) => ({ ...f, colors: [...f.colors, ""] }))}
+        >
           + Add colorway
         </button>
       </fieldset>
@@ -179,23 +273,45 @@ export default function ProductForm() {
         <legend>Sizes & stock</legend>
         {form.variants.map((v, i) => (
           <div className="product-form__variant-row" key={i}>
-            <input placeholder="Size, e.g. US 9" value={v.size} onChange={(e) => updateVariant(i, 'size', e.target.value)} />
-            <input type="number" placeholder="Stock" value={v.stock} onChange={(e) => updateVariant(i, 'stock', e.target.value)} />
+            <input
+              placeholder="Size, e.g. US 9"
+              value={v.size}
+              onChange={(e) => updateVariant(i, "size", e.target.value)}
+            />
+            <input
+              type="number"
+              placeholder="Stock"
+              value={v.stock}
+              onChange={(e) => updateVariant(i, "stock", e.target.value)}
+            />
           </div>
         ))}
-        <button type="button" className="btn btn-outline" onClick={addVariantRow}>
+        <button
+          type="button"
+          className="btn btn-outline"
+          onClick={addVariantRow}
+        >
           + Add size
         </button>
       </fieldset>
 
       <fieldset>
         <legend>Images</legend>
-        <input type="file" accept="image/*" multiple onChange={(e) => stageFiles(e.target.files)} />
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={(e) => stageFiles(e.target.files)}
+        />
         <div className="product-form__image-grid">
           {images.map((img) => (
             <div className="product-form__image-tile" key={img.publicId}>
               <img src={img.url} alt={img.angle} />
-              <button type="button" className="product-form__image-remove" onClick={() => handleRemoveExistingImage(img.publicId)}>
+              <button
+                type="button"
+                className="product-form__image-remove"
+                onClick={() => handleRemoveExistingImage(img.publicId)}
+              >
                 ×
               </button>
             </div>
@@ -210,23 +326,40 @@ export default function ProductForm() {
                   next[i] = { ...next[i], angle: e.target.value };
                   setPendingFiles(next);
                 }}
-                style={{ position: 'absolute', bottom: 0, width: '100%', fontSize: '0.6rem' }}
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  width: "100%",
+                  fontSize: "0.6rem",
+                }}
               >
-                {ANGLES.map((a) => <option key={a}>{a}</option>)}
+                {ANGLES.map((a) => (
+                  <option key={a}>{a}</option>
+                ))}
               </select>
             </div>
           ))}
         </div>
-        {isNew && !savedId && <p style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem' }}>Images upload once you save the product below.</p>}
+        {isNew && !savedId && (
+          <p style={{ color: "var(--color-text-muted)", fontSize: "0.8rem" }}>
+            Images upload once you save the product below.
+          </p>
+        )}
       </fieldset>
 
-      <label style={{ flexDirection: 'row', alignItems: 'center', gap: '0.5rem' }}>
-        <input type="checkbox" checked={form.isActive} onChange={(e) => updateField('isActive', e.target.checked)} />
+      <label
+        style={{ flexDirection: "row", alignItems: "center", gap: "0.5rem" }}
+      >
+        <input
+          type="checkbox"
+          checked={form.isActive}
+          onChange={(e) => updateField("isActive", e.target.checked)}
+        />
         Published (visible in the public catalog)
       </label>
 
       <button className="btn btn-accent" type="submit" disabled={saving}>
-        {saving ? 'Saving…' : 'Save product'}
+        {saving ? "Saving…" : "Save product"}
       </button>
     </form>
   );

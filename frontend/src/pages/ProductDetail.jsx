@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { fetchProductBySlug } from '../api/api';
-import ImageGallery from '../components/ImageGallery';
-import WhatsAppButton from '../components/WhatsAppButton';
-import './ProductDetail.css';
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { fetchProductBySlug } from "../api/api";
+import ImageGallery from "../components/ImageGallery";
+import WhatsAppButton from "../components/WhatsAppButton";
+import "./ProductDetail.css";
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -19,8 +19,18 @@ export default function ProductDetail() {
       .catch(() => setNotFound(true));
   }, [slug]);
 
-  if (notFound) return <div className="container"><p>Zapatilla no encontrada.</p></div>;
-  if (!product) return <div className="container"><p>Cargando…</p></div>;
+  if (notFound)
+    return (
+      <div className="container">
+        <p>Zapatilla no encontrada.</p>
+      </div>
+    );
+  if (!product)
+    return (
+      <div className="container">
+        <p>Cargando…</p>
+      </div>
+    );
 
   return (
     <div className="container product-detail">
@@ -34,7 +44,7 @@ export default function ProductDetail() {
 
         <div className="product-detail__colors">
           <h4>Colores</h4>
-          <p>{product.colors.join(' / ')}</p>
+          <p>{product.colors.join(" / ")}</p>
         </div>
 
         <div className="product-detail__sizes">
@@ -44,7 +54,7 @@ export default function ProductDetail() {
               <button
                 key={v.size}
                 disabled={v.stock === 0}
-                className={`filters__chip ${selectedSize === v.size ? 'is-active' : ''}`}
+                className={`filters__chip ${selectedSize === v.size ? "is-active" : ""}`}
                 onClick={() => setSelectedSize(v.size)}
               >
                 {v.size}
@@ -55,8 +65,18 @@ export default function ProductDetail() {
 
         {/* The two required, prominent WhatsApp CTAs — one to ask, one to buy */}
         <div className="product-detail__actions">
-          <WhatsAppButton product={product} size={selectedSize} variant="inquire" label="Ask a question" />
-          <WhatsAppButton product={product} size={selectedSize} variant="buy" label="Buy this pair" />
+          <WhatsAppButton
+            product={product}
+            size={selectedSize}
+            variant="inquire"
+            label="Hacer una pregunta"
+          />
+          <WhatsAppButton
+            product={product}
+            size={selectedSize}
+            variant="buy"
+            label="Comprar esta par"
+          />
         </div>
 
         <p className="product-detail__sku">SKU: {product.sku}</p>
