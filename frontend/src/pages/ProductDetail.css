@@ -55,5 +55,95 @@
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  .product-detail__actions { max-width: none; }
+  .product-detail__actions {
+    max-width: none;
+  }
+}
+
+/* Feature #6: page padding now lives on the wrapper, not .product-detail itself */
+.product-detail-page {
+  padding: 1.5rem 1.25rem 4rem;
+}
+.product-detail-page .product-detail {
+  padding: 0;
+}
+
+/* Feature #7: size guide trigger sits next to the "Size" label */
+.product-detail__sizes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* Feature #2: stock/urgency messaging */
+.product-detail__urgency {
+  font-size: 0.85rem;
+  color: var(--color-accent);
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+.product-detail__urgency--out {
+  color: var(--color-danger);
+}
+
+/* Features #5 / #9: related + recently-viewed sections */
+.product-detail__section {
+  margin-top: 3rem;
+}
+.product-detail__section h2 {
+  margin-bottom: 1rem;
+}
+
+.product-detail__related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.25rem;
+}
+
+.product-detail__recent-grid {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+.product-detail__recent-item {
+  flex: 0 0 auto;
+  width: 100px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+.product-detail__recent-item img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border: var(--border-hairline);
+  margin-bottom: 0.3rem;
+}
+
+/* Feature #3: sticky mobile WhatsApp bar — hidden on desktop, since the
+   inline buttons are already always visible there without scrolling past
+   them (product info column is short enough). */
+.product-detail__sticky-bar {
+  display: none;
+}
+
+@media (max-width: 780px) {
+  .product-detail__sticky-bar {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--color-surface);
+    border-top: var(--border-hairline);
+    padding: 0.6rem 1rem calc(0.6rem + env(safe-area-inset-bottom));
+    z-index: 25;
+  }
+  /* Leave room at the bottom of the page so the sticky bar never covers
+     the last bit of content (recently-viewed rail, etc.) */
+  .product-detail-page {
+    padding-bottom: 5.5rem;
+  }
 }

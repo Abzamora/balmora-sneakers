@@ -1,0 +1,60 @@
+.size-guide__trigger {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0;
+  align-self: flex-start;
+}
+.size-guide__trigger:hover { color: var(--color-accent); }
+
+.size-guide__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 1rem;
+}
+
+.size-guide__modal {
+  background: var(--color-surface);
+  border: var(--border-hairline);
+  max-width: 360px;
+  width: 100%;
+  padding: 1.25rem;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.size-guide__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.size-guide__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.size-guide__table th,
+.size-guide__table td {
+  border-bottom: var(--border-hairline);
+  padding: 0.4rem;
+  text-align: center;
+}
+
+.size-guide__note {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: 0.75rem;
+  margin-bottom: 0;
+}

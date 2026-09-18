@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/sneakers/:slug",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(facebookexternalhit|WhatsApp|Twitterbot|LinkedInBot|Slackbot|TelegramBot|Discordbot|Pinterest).*"
+        }
+      ],
+      "destination": "/api/product-preview?slug=:slug"
+    },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ]
+}

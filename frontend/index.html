@@ -4,7 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Balmora Sneakers — Catálogo</title>
-    <meta name="description" content="Explora y consulta las últimas novedades de zapatillas a través de WhatsApp." />
+    <meta
+      name="description"
+      content="Browse and inquire about the latest sneaker drops via WhatsApp."
+    />
+
+    <!-- Feature #11: Google Analytics (GA4). Replace G-XXXXXXX with your
+         real Measurement ID from analytics.google.com, or delete this
+         block entirely if you don't want analytics yet — WhatsAppButton.jsx
+         already checks whether gtag exists before calling it. -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-XXXXXXX");
+    </script>
   </head>
   <body>
     <div id="root"></div>

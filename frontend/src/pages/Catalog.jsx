@@ -57,6 +57,22 @@ export default function Catalog() {
         <p>
           {loading ? "Loading…" : `${data.totalResults} zapatillas encontradas`}
         </p>
+
+        {/* Feature #4: sort control — the backend already supports "sort",
+            this just exposes it in the UI. */}
+        <select
+          className="catalog__sort"
+          value={filters.sort || "newest"}
+          onChange={(e) =>
+            handleFilterChange({ ...filters, sort: e.target.value })
+          }
+          aria-label="Sort products"
+        >
+          <option value="newest">Newest</option>
+          <option value="price_asc">Price: low to high</option>
+          <option value="price_desc">Price: high to low</option>
+        </select>
+
         <button
           className="btn btn-outline catalog__filter-toggle"
           onClick={() => setMobileFiltersOpen(true)}

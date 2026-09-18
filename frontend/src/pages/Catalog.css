@@ -12,6 +12,15 @@
   margin: 0.25rem 0 0;
 }
 
+.catalog__sort {
+  background: var(--color-surface-alt);
+  border: var(--border-hairline);
+  color: var(--color-text);
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radius-sm);
+  margin-top: 0.5rem;
+}
+
 .catalog__filter-toggle {
   display: none;
 }
