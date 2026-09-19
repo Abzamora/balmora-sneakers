@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { fetchProducts, fetchFacets } from "../api/api";
 import ProductCard from "../components/ProductCard";
 import FilterSidebar from "../components/FilterSidebar";
+import FeaturedStrip from "../components/FeaturedStrip";
 import "./Catalog.css";
 
 /**
@@ -52,6 +53,7 @@ export default function Catalog() {
 
   return (
     <div className="container catalog">
+      <FeaturedStrip />
       <div className="catalog__header">
         <h1>Balmora - Sneakers</h1>
         <p>

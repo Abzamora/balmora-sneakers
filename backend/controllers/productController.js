@@ -1,6 +1,9 @@
-const asyncHandler = require('express-async-handler');
-const Product = require('../models/Product');
-const { cloudinary, uploadBufferToCloudinary } = require('../config/cloudinary');
+const asyncHandler = require("express-async-handler");
+const Product = require("../models/Product");
+const {
+  cloudinary,
+  uploadBufferToCloudinary,
+} = require("../config/cloudinary");
 
 /**
  * Turns a sneaker name into a URL-safe, unique-ish slug.
@@ -10,8 +13,8 @@ function slugify(name) {
   return name
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
 
 /**
@@ -25,16 +28,18 @@ function slugify(name) {
  *   page, limit                      -> pagination
  */
 const getProducts = asyncHandler(async (req, res) => {
-  const { brand, style, color, size, minPrice, maxPrice, q, sort } = req.query;
+  const { brand, style, color, size, minPrice, maxPrice, q, sort, featured } =
+    req.query;
   const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
   const limit = Math.min(parseInt(req.query.limit, 10) || 20, 60);
 
   const filter = { isActive: true };
 
-  if (brand) filter.brand = { $in: brand.split(',') };
-  if (style) filter.style = { $in: style.split(',') };
-  if (color) filter.colors = { $in: color.split(',') };
-  if (size) filter['variants.size'] = { $in: size.split(',') };
+  if (brand) filter.brand = { $in: brand.split(",") };
+  if (style) filter.style = { $in: style.split(",") };
+  if (color) filter.colors = { $in: color.split(",") };
+  if (size) filter["variants.size"] = { $in: size.split(",") };
+  if (featured === "true") filter.isFeatured = true; // powers the "featured" strip — fully optional per admin
 
   if (minPrice || maxPrice) {
     filter.price = {};
@@ -74,13 +79,15 @@ const getProducts = asyncHandler(async (req, res) => {
  */
 const getFacets = asyncHandler(async (req, res) => {
   const [brands, styles, colors, sizes, priceBounds] = await Promise.all([
-    Product.distinct('brand', { isActive: true }),
-    Product.distinct('style', { isActive: true }),
-    Product.distinct('colors', { isActive: true }),
-    Product.distinct('variants.size', { isActive: true }),
+    Product.distinct("brand", { isActive: true }),
+    Product.distinct("style", { isActive: true }),
+    Product.distinct("colors", { isActive: true }),
+    Product.distinct("variants.size", { isActive: true }),
     Product.aggregate([
       { $match: { isActive: true } },
-      { $group: { _id: null, min: { $min: '$price' }, max: { $max: '$price' } } },
+      {
+        $group: { _id: null, min: { $min: "$price" }, max: { $max: "$price" } },
+      },
     ]),
   ]);
 
@@ -98,11 +105,14 @@ const getFacets = asyncHandler(async (req, res) => {
  * Public. Product detail page — full data including every gallery image.
  */
 const getProductBySlug = asyncHandler(async (req, res) => {
-  const product = await Product.findOne({ slug: req.params.slug, isActive: true });
+  const product = await Product.findOne({
+    slug: req.params.slug,
+    isActive: true,
+  });
 
   if (!product) {
     res.status(404);
-    throw new Error('Product not found');
+    throw new Error("Product not found");
   }
 
   res.json(product);
@@ -125,7 +135,7 @@ const getAllProductsAdmin = asyncHandler(async (req, res) => {
  */
 const createProduct = asyncHandler(async (req, res) => {
   const body = req.body;
-  const slug = slugify(body.name);
+  const slug = slugify(`${body.name}-${body.sku}`);
 
   const product = await Product.create({
     ...body,
@@ -145,11 +155,15 @@ const updateProduct = asyncHandler(async (req, res) => {
 
   if (!product) {
     res.status(404);
-    throw new Error('Product not found');
+    throw new Error("Product not found");
   }
 
   Object.assign(product, req.body);
-  if (req.body.name) product.slug = slugify(req.body.name);
+  if (req.body.name || req.body.sku) {
+    product.slug = slugify(
+      `${req.body.name || product.name}-${req.body.sku || product.sku}`,
+    );
+  }
 
   const updated = await product.save();
   res.json(updated);
@@ -165,13 +179,15 @@ const deleteProduct = asyncHandler(async (req, res) => {
 
   if (!product) {
     res.status(404);
-    throw new Error('Product not found');
+    throw new Error("Product not found");
   }
 
-  await Promise.all(product.images.map((img) => cloudinary.uploader.destroy(img.publicId)));
+  await Promise.all(
+    product.images.map((img) => cloudinary.uploader.destroy(img.publicId)),
+  );
   await product.deleteOne();
 
-  res.json({ message: 'Product deleted' });
+  res.json({ message: "Product deleted" });
 });
 
 /**
@@ -186,22 +202,24 @@ const addProductImages = asyncHandler(async (req, res) => {
 
   if (!product) {
     res.status(404);
-    throw new Error('Product not found');
+    throw new Error("Product not found");
   }
 
   if (!req.files || req.files.length === 0) {
     res.status(400);
-    throw new Error('No image files were uploaded');
+    throw new Error("No image files were uploaded");
   }
 
   const angles = req.body.angles ? JSON.parse(req.body.angles) : [];
 
-  const results = await Promise.all(req.files.map((file) => uploadBufferToCloudinary(file.buffer)));
+  const results = await Promise.all(
+    req.files.map((file) => uploadBufferToCloudinary(file.buffer)),
+  );
 
   const newImages = results.map((result, i) => ({
     url: result.secure_url,
     publicId: result.public_id,
-    angle: angles[i] || 'front',
+    angle: angles[i] || "front",
     isPrimary: product.images.length === 0 && i === 0,
   }));
 
@@ -221,7 +239,7 @@ const deleteProductImage = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
   if (!product) {
     res.status(404);
-    throw new Error('Product not found');
+    throw new Error("Product not found");
   }
 
   const publicId = decodeURIComponent(req.params.publicId);

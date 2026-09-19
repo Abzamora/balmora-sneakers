@@ -166,6 +166,13 @@ export default function ProductForm() {
     setPendingFiles((prev) => [...prev, ...files]);
   }
 
+  function removePendingFile(index) {
+    setPendingFiles((prev) => {
+      URL.revokeObjectURL(prev[index].preview); // libera la memoria de la vista previa
+      return prev.filter((_, i) => i !== index);
+    });
+  }
+
   async function handleRemoveExistingImage(publicId) {
     const updated = await deleteProductImage(savedId, publicId);
     setImages(updated.images);
@@ -319,6 +326,15 @@ export default function ProductForm() {
           {pendingFiles.map((pf, i) => (
             <div className="product-form__image-tile" key={pf.preview}>
               <img src={pf.preview} alt="pending upload" />
+
+              <button
+                type="button"
+                className="product-form__image-remove"
+                onClick={() => removePendingFile(i)}
+              >
+                ×
+              </button>
+
               <select
                 value={pf.angle}
                 onChange={(e) => {
@@ -346,6 +362,17 @@ export default function ProductForm() {
           </p>
         )}
       </fieldset>
+
+      <label
+        style={{ flexDirection: "row", alignItems: "center", gap: "0.5rem" }}
+      >
+        <input
+          type="checkbox"
+          checked={form.isFeatured}
+          onChange={(e) => updateField("isFeatured", e.target.checked)}
+        />
+        Featured (shows in the "Featured" strip on the catalog — optional)
+      </label>
 
       <label
         style={{ flexDirection: "row", alignItems: "center", gap: "0.5rem" }}

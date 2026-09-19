@@ -1,11 +1,12 @@
-import { Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Catalog from './pages/Catalog';
-import ProductDetail from './pages/ProductDetail';
-import Login from './pages/admin/Login';
-import Dashboard from './pages/admin/Dashboard';
-import ProductForm from './pages/admin/ProductForm';
-import ProtectedRoute from './pages/admin/ProtectedRoute';
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Catalog from "./pages/Catalog";
+import ProductDetail from "./pages/ProductDetail";
+import WishlistPage from "./pages/WishlistPage";
+import Login from "./pages/admin/Login";
+import Dashboard from "./pages/admin/Dashboard";
+import ProductForm from "./pages/admin/ProductForm";
+import ProtectedRoute from "./pages/admin/ProtectedRoute";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/" element={<Catalog />} />
         <Route path="/sneakers" element={<Catalog />} />
         <Route path="/sneakers/:slug" element={<ProductDetail />} />
+        <Route path="/favoritos" element={<WishlistPage />} />
 
         {/* Admin panel, guarded except for the login screen itself */}
         <Route path="/admin/login" element={<Login />} />

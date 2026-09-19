@@ -126,7 +126,7 @@ export default function ProductDetail() {
         <div className="product-detail__info">
           <span className="tag">{product.brand}</span>
           <h1>{product.name}</h1>
-          <p className="product-detail__price">${product.price.toFixed(2)}</p>
+          <p className="product-detail__price">Bs{product.price.toFixed(2)}</p>
           <p className="product-detail__description">{product.description}</p>
 
           <div className="product-detail__colors">
@@ -136,7 +136,7 @@ export default function ProductDetail() {
 
           <div className="product-detail__sizes">
             <div className="product-detail__sizes-header">
-              <h4>Size (US)</h4>
+              <h4>Size (EUR)</h4>
               <SizeGuide />
             </div>
             <div className="product-detail__size-grid">

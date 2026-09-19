@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { fetchAllProductsAdmin, deleteProduct } from '../../api/api';
-import { useAuth } from '../../context/AuthContext';
-import './admin.css';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { fetchAllProductsAdmin, deleteProduct } from "../../api/api";
+import { useAuth } from "../../context/AuthContext";
+import "./admin.css";
 
 export default function Dashboard() {
   const [products, setProducts] = useState([]);
@@ -19,7 +19,12 @@ export default function Dashboard() {
   useEffect(load, []);
 
   async function handleDelete(id, name) {
-    if (!window.confirm(`Delete "${name}"? This also removes its images from storage.`)) return;
+    if (
+      !window.confirm(
+        `Delete "${name}"? This also removes its images from storage.`,
+      )
+    )
+      return;
     await deleteProduct(id);
     load();
   }
@@ -31,7 +36,7 @@ export default function Dashboard() {
           <h1>Products</h1>
           <p>Signed in as {admin?.username}</p>
         </div>
-        <div style={{ display: 'flex', gap: '0.6rem' }}>
+        <div style={{ display: "flex", gap: "0.6rem" }}>
           <Link className="btn btn-accent" to="/admin/products/new">
             + New product
           </Link>
@@ -59,17 +64,27 @@ export default function Dashboard() {
           <tbody>
             {products.map((p) => (
               <tr key={p._id}>
-                <td data-label="Image">{p.images[0] && <img src={p.images[0].url} alt="" />}</td>
+                <td data-label="Image">
+                  {p.images[0] && <img src={p.images[0].url} alt="" />}
+                </td>
                 <td data-label="Name">{p.name}</td>
                 <td data-label="Brand">{p.brand}</td>
-                <td data-label="Price">${p.price.toFixed(2)}</td>
+                <td data-label="Price">Bs{p.price.toFixed(2)}</td>
                 <td data-label="Stock">{p.totalStock}</td>
-                <td data-label="Status">{p.isActive ? 'Published' : 'Draft'}</td>
+                <td data-label="Status">
+                  {p.isActive ? "Published" : "Draft"}
+                </td>
                 <td data-label="Actions" className="admin-table__actions">
-                  <Link className="btn btn-outline" to={`/admin/products/${p._id}`}>
+                  <Link
+                    className="btn btn-outline"
+                    to={`/admin/products/${p._id}`}
+                  >
                     Edit
                   </Link>
-                  <button className="btn btn-outline" onClick={() => handleDelete(p._id, p.name)}>
+                  <button
+                    className="btn btn-outline"
+                    onClick={() => handleDelete(p._id, p.name)}
+                  >
                     Delete
                   </button>
                 </td>
