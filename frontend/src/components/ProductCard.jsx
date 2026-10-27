@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import WhatsAppButton from "./WhatsAppButton";
 import { useWishlist } from "../context/WishlistContext";
+import { optimizedUrl } from "../utils/cloudinary";
+import { isSoldOut } from "../utils/availability";
+import ShareButton from "./ShareButton";
 import "./ProductCard.css";
 
 export default function ProductCard({ product }) {
@@ -10,14 +13,21 @@ export default function ProductCard({ product }) {
     product.compareAtPrice && product.compareAtPrice > product.price;
   const { isSaved, toggle } = useWishlist();
   const saved = isSaved(product.slug);
+  const soldOut = isSoldOut(product);
 
   return (
     <article className="product-card">
-      <Link to={`/sneakers/${product.slug}`} className="product-card__media">
+      <Link
+        to={`/sneakers/${product.slug}`}
+        className={`product-card__media ${soldOut ? "is-soldout" : ""}`}
+      >
         <img src={primaryImage.url} alt={product.name} loading="lazy" />
-        {onSale && <span className="product-card__badge">Sale</span>}
+        {onSale && !soldOut && (
+          <span className="product-card__badge">Sale</span>
+        )}
+        {soldOut && <span className="product-card__soldout">Vendido</span>}
       </Link>
-
+      <ShareButton product={product} variant="icon" />
       {/* Feature #8: favoritos guardados en localStorage, sin necesitar cuenta */}
       <button
         type="button"

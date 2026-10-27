@@ -78,3 +78,14 @@
     font-size: 1.3rem;
   }
 }
+
+@media (max-width: 600px) {
+  .catalog {
+    padding: 1.25rem 0.75rem 3rem;
+  }
+
+  .catalog__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+  }
+}

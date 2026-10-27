@@ -1,0 +1,29 @@
+.home__hero {
+  border-bottom: var(--border-hairline);
+  padding: 4rem 0;
+  text-align: center;
+  background: radial-gradient(
+    circle at 50% 0%,
+    var(--color-accent-soft),
+    var(--color-bg) 70%
+  );
+}
+
+.home__hero-title {
+  color: var(--color-accent);
+  margin-bottom: 0.5rem;
+}
+
+.home__hero-subtitle {
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.home__hero-cta {
+  display: inline-flex;
+}
+
+.home__featured-section {
+  padding: 2.5rem 1.25rem;
+}

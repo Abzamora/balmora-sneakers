@@ -91,6 +91,7 @@ const productSchema = new mongoose.Schema(
     },
     isFeatured: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true, index: true }, // soft delete / draft toggle
+    isSold: { type: Boolean, default: false }, // marcado manualmente como vendido / no disponible
     totalStock: { type: Number, default: 0 }, // denormalized sum of variants.stock, kept in sync via pre-save hook
   },
   { timestamps: true },

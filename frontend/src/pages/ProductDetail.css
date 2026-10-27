@@ -125,9 +125,6 @@
 /* Feature #3: sticky mobile WhatsApp bar — hidden on desktop, since the
    inline buttons are already always visible there without scrolling past
    them (product info column is short enough). */
-.product-detail__sticky-bar {
-  display: none;
-}
 
 @media (max-width: 780px) {
   .product-detail__sticky-bar {
@@ -143,7 +140,10 @@
   }
   /* Leave room at the bottom of the page so the sticky bar never covers
      the last bit of content (recently-viewed rail, etc.) */
-  .product-detail-page {
-    padding-bottom: 5.5rem;
+}
+@media (max-width: 600px) {
+  .product-detail__related-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
   }
 }

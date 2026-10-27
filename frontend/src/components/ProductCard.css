@@ -93,3 +93,38 @@
   color: var(--color-text-muted);
   text-decoration: line-through;
 }
+@media (max-width: 600px) {
+  .product-card__body {
+    padding: 0.6rem;
+  }
+
+  .product-card__name {
+    font-size: 0.85rem;
+  }
+
+  .product-card__price {
+    font-size: 1.2rem;
+  }
+
+  .product-card .btn-whatsapp {
+    padding: 0.5rem 0.4rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Sold-out state */
+.product-card__media.is-soldout img {
+  opacity: 0.45;
+  filter: grayscale(0.6);
+}
+.product-card__soldout {
+  position: absolute;
+  bottom: 0.6rem;
+  left: 0.6rem;
+  background: var(--color-danger);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+}

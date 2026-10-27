@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import Catalog from "./pages/Catalog";
 import ProductDetail from "./pages/ProductDetail";
 import WishlistPage from "./pages/WishlistPage";
+import Home from "./pages/Home";
 import Login from "./pages/admin/Login";
 import Dashboard from "./pages/admin/Dashboard";
 import ProductForm from "./pages/admin/ProductForm";
@@ -14,7 +15,7 @@ export default function App() {
       <Navbar />
       <Routes>
         {/* Public storefront */}
-        <Route path="/" element={<Catalog />} />
+        <Route path="/" element={<Home />} />
         <Route path="/sneakers" element={<Catalog />} />
         <Route path="/sneakers/:slug" element={<ProductDetail />} />
         <Route path="/favoritos" element={<WishlistPage />} />

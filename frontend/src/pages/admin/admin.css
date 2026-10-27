@@ -80,8 +80,13 @@
 /* On narrow screens, the table becomes stacked cards instead of scrolling
    horizontally — keeps every field readable on a phone. */
 @media (max-width: 700px) {
-  .admin-table thead { display: none; }
-  .admin-table, .admin-table tbody, .admin-table tr, .admin-table td {
+  .admin-table thead {
+    display: none;
+  }
+  .admin-table,
+  .admin-table tbody,
+  .admin-table tr,
+  .admin-table td {
     display: block;
     width: 100%;
   }
@@ -156,7 +161,11 @@
   overflow: hidden;
 }
 
-.product-form__image-tile img { width: 100%; height: 100%; object-fit: cover; }
+.product-form__image-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
 .product-form__image-remove {
   position: absolute;
@@ -173,5 +182,28 @@
 }
 
 @media (max-width: 600px) {
-  .product-form__row { grid-template-columns: 1fr; }
+  .product-form__row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Form hints and errors */
+.product-form__hint {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin: 0.4rem 0 0;
+}
+.product-form__errors {
+  border: 1px solid var(--color-danger);
+  background: rgba(224, 82, 82, 0.1);
+  color: var(--color-danger);
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+}
+.product-form__errors p {
+  margin: 0 0 0.25rem;
+}
+.product-form__errors p:last-child {
+  margin-bottom: 0;
 }

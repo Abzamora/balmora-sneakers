@@ -52,7 +52,29 @@ const emptyProduct = {
   variants: [{ size: "", stock: 0 }],
   isFeatured: false,
   isActive: true,
+  isSold: false,
 };
+
+const MAX_SIZE_MB = 8;
+const MIN_DIMENSION = 600;
+const MAX_FILES = 10;
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
+function readDimensions(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      resolve({ width: img.naturalWidth, height: img.naturalHeight });
+      URL.revokeObjectURL(url);
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("unreadable"));
+    };
+    img.src = url;
+  });
+}
 
 export default function ProductForm() {
   const { id } = useParams(); // "new" or a Mongo _id
@@ -64,6 +86,8 @@ export default function ProductForm() {
   const [pendingFiles, setPendingFiles] = useState([]); // File objects staged before the first save
   const [savedId, setSavedId] = useState(isNew ? null : id);
   const [saving, setSaving] = useState(false);
+  const [imageErrors, setImageErrors] = useState([]);
+  const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
     if (isNew) return;
@@ -84,6 +108,7 @@ export default function ProductForm() {
             : [{ size: "", stock: 0 }],
           isFeatured: existing.isFeatured,
           isActive: existing.isActive,
+          isSold: existing.isSold,
         });
         setImages(existing.images);
       }
@@ -115,7 +140,9 @@ export default function ProductForm() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setSubmitError("");
     setSaving(true);
+    let productSaved = false;
     try {
       const payload = {
         ...form,
@@ -137,8 +164,8 @@ export default function ProductForm() {
       } else {
         await updateProduct(productId, payload);
       }
+      productSaved = true;
 
-      // Flush any images staged before the product existed / since the last save
       if (pendingFiles.length > 0) {
         const formData = new FormData();
         pendingFiles.forEach((pf) => formData.append("images", pf.file));
@@ -152,18 +179,63 @@ export default function ProductForm() {
       }
 
       navigate("/admin");
+    } catch (err) {
+      const detail =
+        err.response?.data?.message ||
+        "Revisa tu conexión e inténtalo de nuevo.";
+      setSubmitError(
+        productSaved
+          ? `Los datos se guardaron, pero las imágenes no se pudieron subir: ${detail}`
+          : `No se pudo guardar el producto: ${detail}`,
+      );
     } finally {
       setSaving(false);
     }
   }
 
-  function stageFiles(fileList) {
-    const files = Array.from(fileList).map((file) => ({
-      file,
-      angle: "front",
-      preview: URL.createObjectURL(file),
-    }));
-    setPendingFiles((prev) => [...prev, ...files]);
+  async function stageFiles(fileList) {
+    const accepted = [];
+    const problems = [];
+
+    for (const file of Array.from(fileList)) {
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        problems.push(
+          `"${file.name}": formato no permitido (usa JPG, PNG o WebP)`,
+        );
+        continue;
+      }
+      if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+        problems.push(
+          `"${file.name}": pesa ${(file.size / 1024 / 1024).toFixed(1)} MB (máximo ${MAX_SIZE_MB} MB)`,
+        );
+        continue;
+      }
+      try {
+        const { width, height } = await readDimensions(file);
+        if (width < MIN_DIMENSION || height < MIN_DIMENSION) {
+          problems.push(
+            `"${file.name}": es muy pequeña (${width}×${height} px, mínimo ${MIN_DIMENSION}×${MIN_DIMENSION} px)`,
+          );
+          continue;
+        }
+      } catch {
+        problems.push(`"${file.name}": no se pudo leer la imagen`);
+        continue;
+      }
+      accepted.push({
+        file,
+        angle: "front",
+        preview: URL.createObjectURL(file),
+      });
+    }
+
+    if (pendingFiles.length + accepted.length > MAX_FILES) {
+      problems.push(`Máximo ${MAX_FILES} imágenes por guardado`);
+      accepted.length = Math.max(0, MAX_FILES - pendingFiles.length);
+    }
+
+    setImageErrors(problems);
+    if (accepted.length > 0) setPendingFiles((prev) => [...prev, ...accepted]);
   }
 
   function removePendingFile(index) {
@@ -306,10 +378,24 @@ export default function ProductForm() {
         <legend>Images</legend>
         <input
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/png,image/webp"
           multiple
-          onChange={(e) => stageFiles(e.target.files)}
+          onChange={(e) => {
+            stageFiles(e.target.files);
+            e.target.value = "";
+          }}
         />
+        <p className="product-form__hint">
+          JPG, PNG o WebP · máximo 8 MB · mínimo 600×600 px (ideal: cuadrada,
+          1200×1200 px) · hasta 10 por guardado
+        </p>
+        {imageErrors.length > 0 && (
+          <div className="product-form__errors" role="alert">
+            {imageErrors.map((m) => (
+              <p key={m}>{m}</p>
+            ))}
+          </div>
+        )}
         <div className="product-form__image-grid">
           {images.map((img) => (
             <div className="product-form__image-tile" key={img.publicId}>
@@ -385,6 +471,23 @@ export default function ProductForm() {
         Published (visible in the public catalog)
       </label>
 
+      <label
+        style={{ flexDirection: "row", alignItems: "center", gap: "0.5rem" }}
+      >
+        <input
+          type="checkbox"
+          checked={!!form.isSold}
+          onChange={(e) => updateField("isSold", e.target.checked)}
+        />
+        Vendido / no disponible (se muestra como vendido y se desactiva
+        "Comprar")
+      </label>
+
+      {submitError && (
+        <div className="product-form__errors" role="alert">
+          <p>{submitError}</p>
+        </div>
+      )}
       <button className="btn btn-accent" type="submit" disabled={saving}>
         {saving ? "Saving…" : "Save product"}
       </button>

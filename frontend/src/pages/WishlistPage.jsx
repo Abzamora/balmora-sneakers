@@ -41,10 +41,7 @@ export default function WishlistPage() {
         </p>
       )}
 
-      <div
-        className="catalog__grid"
-        style={{ gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))" }}
-      >
+      <div className="catalog__grid">
         {products.map((p) => (
           <ProductCard key={p._id} product={p} />
         ))}

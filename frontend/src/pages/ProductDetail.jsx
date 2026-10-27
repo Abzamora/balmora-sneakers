@@ -7,6 +7,8 @@ import WhatsAppButton from "../components/WhatsAppButton";
 import Breadcrumbs from "../components/Breadcrumbs";
 import SizeGuide from "../components/SizeGuide";
 import ProductCard from "../components/ProductCard";
+import ShareButton from "../components/ShareButton";
+import { isSoldOut } from "../utils/availability";
 import {
   recordRecentlyViewed,
   getRecentlyViewed,
@@ -60,7 +62,8 @@ export default function ProductDetail() {
   const primaryImage =
     product.images.find((img) => img.isPrimary) || product.images[0];
   const productUrl = `${window.location.origin}/sneakers/${product.slug}`;
-  const inStock = product.totalStock > 0;
+  const soldOut = isSoldOut(product);
+  const inStock = !soldOut;
 
   // Feature #10: Schema.org structured data so Google can show price/
   // availability directly in search results.
@@ -153,14 +156,16 @@ export default function ProductDetail() {
             </div>
 
             {/* Feature #2: stock/urgency indicator */}
-            {inStock && product.totalStock <= 3 && (
-              <p className="product-detail__urgency">
-                Only {product.totalStock} left in stock
-              </p>
-            )}
-            {!inStock && (
+            {inStock &&
+              product.variants.length > 0 &&
+              product.totalStock <= 3 && (
+                <p className="product-detail__urgency">
+                  Solo quedan {product.totalStock}
+                </p>
+              )}
+            {soldOut && (
               <p className="product-detail__urgency product-detail__urgency--out">
-                Out of stock
+                Vendido: este par ya no está disponible
               </p>
             )}
           </div>
@@ -177,8 +182,10 @@ export default function ProductDetail() {
               product={product}
               size={selectedSize}
               variant="buy"
-              label="Buy this pair"
+              label={soldOut ? "No disponible" : "Buy this pair"}
+              disabled={soldOut}
             />
+            <ShareButton product={product} />
           </div>
 
           <p className="product-detail__sku">SKU: {product.sku}</p>
@@ -215,16 +222,6 @@ export default function ProductDetail() {
           </div>
         </section>
       )}
-
-      {/* Feature #3: sticky WhatsApp bar on mobile, always visible while scrolling */}
-      <div className="product-detail__sticky-bar">
-        <WhatsAppButton
-          product={product}
-          size={selectedSize}
-          variant="buy"
-          label="Buy via WhatsApp"
-        />
-      </div>
     </div>
   );
 }

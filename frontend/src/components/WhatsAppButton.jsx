@@ -23,7 +23,15 @@ export default function WhatsAppButton({
   size,
   variant = "inquire",
   label,
+  disabled = false,
 }) {
+  if (disabled) {
+    return (
+      <button type="button" className="btn btn-whatsapp" disabled>
+        {label || "No disponible"}
+      </button>
+    );
+  }
   const productUrl = `${window.location.origin}/sneakers/${product.slug}`;
   const href = buildWhatsAppLink({
     name: product.name,
