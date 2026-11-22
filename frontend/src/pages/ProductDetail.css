@@ -21,6 +21,8 @@
 .product-detail__description {
   color: var(--color-text-muted);
   max-width: 60ch;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .product-detail__colors h4,

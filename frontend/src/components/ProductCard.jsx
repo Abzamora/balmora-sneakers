@@ -23,7 +23,7 @@ export default function ProductCard({ product }) {
       >
         <img src={primaryImage.url} alt={product.name} loading="lazy" />
         {onSale && !soldOut && (
-          <span className="product-card__badge">Sale</span>
+          <span className="product-card__badge">Oferta</span>
         )}
         {soldOut && <span className="product-card__soldout">Vendido</span>}
       </Link>
@@ -47,11 +47,11 @@ export default function ProductCard({ product }) {
 
         <div className="product-card__price-row">
           <span className="product-card__price">
-            ${product.price.toFixed(2)}
+            Bs {product.price.toFixed(2)}
           </span>
           {onSale && (
             <span className="product-card__compare">
-              ${product.compareAtPrice.toFixed(2)}
+              Bs {product.compareAtPrice.toFixed(2)}
             </span>
           )}
         </div>

@@ -13,15 +13,18 @@ export default async function handler(req, res) {
 
   try {
     const response = await fetch(`${apiUrl}/products/${slug}`);
-    if (!response.ok) throw new Error('Product not found');
+    if (!response.ok) throw new Error("Product not found");
     const product = await response.json();
 
-    const primaryImage = product.images.find((img) => img.isPrimary) || product.images[0];
+    const primaryImage =
+      product.images.find((img) => img.isPrimary) || product.images[0];
     const productUrl = `https://${req.headers.host}/sneakers/${product.slug}`;
-    const description = escapeHtml(product.description.slice(0, 155));
+    const description = escapeHtml(
+      product.description.replace(/\s+/g, " ").slice(0, 155),
+    );
     const name = escapeHtml(product.name);
 
-    res.setHeader('Content-Type', 'text/html');
+    res.setHeader("Content-Type", "text/html");
     res.status(200).send(`<!doctype html>
 <html lang="es">
   <head>
@@ -43,10 +46,16 @@ export default async function handler(req, res) {
   </body>
 </html>`);
   } catch (err) {
-    res.status(404).send('Product not found');
+    res.status(404).send("Product not found");
   }
 }
 
 function escapeHtml(str) {
-  return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  return String(str).replace(
+    /[&<>"']/g,
+    (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        c
+      ],
+  );
 }

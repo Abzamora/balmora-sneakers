@@ -33,7 +33,7 @@ const getProducts = asyncHandler(async (req, res) => {
   const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
   const limit = Math.min(parseInt(req.query.limit, 10) || 20, 60);
 
-  const filter = { isActive: true };
+  const filter = { isActive: true, "images.0": { $exists: true } };
 
   if (brand) filter.brand = { $in: brand.split(",") };
   if (style) filter.style = { $in: style.split(",") };
@@ -108,6 +108,7 @@ const getProductBySlug = asyncHandler(async (req, res) => {
   const product = await Product.findOne({
     slug: req.params.slug,
     isActive: true,
+    "images.0": { $exists: true },
   });
 
   if (!product) {

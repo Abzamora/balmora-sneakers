@@ -30,14 +30,14 @@ export default function WishlistPage() {
   return (
     <div className="container catalog">
       <div className="catalog__header">
-        <h1>Your Favorites</h1>
-        <p>{loading ? "Loading…" : `${products.length} saved`}</p>
+        <h1>Tus Favoritos</h1>
+        <p>{loading ? "Cargando…" : `${products.length} guardados`}</p>
       </div>
 
       {!loading && products.length === 0 && (
         <p>
-          You haven't saved anything yet. Tap the ♡ on any sneaker to add it
-          here — <Link to="/sneakers">browse the catalog</Link>.
+          No has guardado nada aún. Toca el ♡ en cualquier zapatilla para
+          agregarla aqui — <Link to="/sneakers">explorar el catálogo</Link>.
         </p>
       )}
 

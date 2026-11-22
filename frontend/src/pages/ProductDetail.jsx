@@ -78,7 +78,7 @@ export default function ProductDetail() {
     offers: {
       "@type": "Offer",
       url: productUrl,
-      priceCurrency: "USD",
+      priceCurrency: "BOB",
       price: product.price,
       availability: inStock
         ? "https://schema.org/InStock"
@@ -97,24 +97,27 @@ export default function ProductDetail() {
           browser tab title/description and any crawler that does run JS. */}
       <Helmet>
         <title>{`${product.name} — Balmora Sneakers`}</title>
-        <meta name="description" content={product.description.slice(0, 155)} />
+        <meta
+          name="description"
+          content={product.description.replace(/\s+/g, " ").slice(0, 155)}
+        />
         <meta property="og:type" content="product" />
         <meta property="og:title" content={product.name} />
         <meta
           property="og:description"
-          content={product.description.slice(0, 155)}
+          content={product.description.replace(/\s+/g, " ").slice(0, 155)}
         />
         <meta property="og:image" content={primaryImage.url} />
         <meta property="og:url" content={productUrl} />
         <meta property="product:price:amount" content={product.price} />
-        <meta property="product:price:currency" content="USD" />
+        <meta property="product:price:currency" content="BOB" />
         <meta name="twitter:card" content="summary_large_image" />
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
       <Breadcrumbs
         items={[
-          { label: "Catalog", to: "/sneakers" },
+          { label: "Catalogo", to: "/sneakers" },
           {
             label: product.brand,
             to: `/sneakers?brand=${encodeURIComponent(product.brand)}`,
@@ -133,13 +136,13 @@ export default function ProductDetail() {
           <p className="product-detail__description">{product.description}</p>
 
           <div className="product-detail__colors">
-            <h4>Colorway</h4>
+            <h4>Colores</h4>
             <p>{product.colors.join(" / ")}</p>
           </div>
 
           <div className="product-detail__sizes">
             <div className="product-detail__sizes-header">
-              <h4>Size (EUR)</h4>
+              <h4>Talla (EUR)</h4>
               <SizeGuide />
             </div>
             <div className="product-detail__size-grid">
@@ -176,13 +179,13 @@ export default function ProductDetail() {
               product={product}
               size={selectedSize}
               variant="inquire"
-              label="Ask a question"
+              label="Preguntar por este par"
             />
             <WhatsAppButton
               product={product}
               size={selectedSize}
               variant="buy"
-              label={soldOut ? "No disponible" : "Buy this pair"}
+              label={soldOut ? "No disponible" : "Comprar este par"}
               disabled={soldOut}
             />
             <ShareButton product={product} />
@@ -195,7 +198,7 @@ export default function ProductDetail() {
       {/* Feature #5: related products */}
       {related.length > 0 && (
         <section className="product-detail__section">
-          <h2>You might also like</h2>
+          <h2>También te puede gustar</h2>
           <div className="product-detail__related-grid">
             {related.map((p) => (
               <ProductCard key={p._id} product={p} />
@@ -207,7 +210,7 @@ export default function ProductDetail() {
       {/* Feature #9: recently viewed */}
       {recentlyViewed.length > 0 && (
         <section className="product-detail__section">
-          <h2>Recently viewed</h2>
+          <h2>Vistos recientemente</h2>
           <div className="product-detail__recent-grid">
             {recentlyViewed.map((p) => (
               <a

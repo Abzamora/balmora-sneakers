@@ -9,10 +9,10 @@ export default function Home() {
         <div className="container home__hero-inner">
           <h1 className="home__hero-title">Balmora Sneakers</h1>
           <p className="home__hero-subtitle">
-            Curated pairs, straight to your WhatsApp.
+            Pares seleccionados, directo a tu WhatsApp.
           </p>
           <Link to="/sneakers" className="btn btn-accent home__hero-cta">
-            Browse the full catalog
+            Explorar el catálogo completo
           </Link>
         </div>
       </section>

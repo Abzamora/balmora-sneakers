@@ -1,4 +1,5 @@
 import "./FilterSidebar.css";
+import { STYLE_LABELS } from "../utils/labels";
 
 /**
  * Controlled, presentation-only filter panel. All state lives in the parent
@@ -18,8 +19,8 @@ export default function FilterSidebar({ facets, filters, onChange }) {
   }
 
   return (
-    <aside className="filters" aria-label="Product filters">
-      <FilterGroup title="Brand">
+    <aside className="filters" aria-label="Filtros de productos">
+      <FilterGroup title="Marca">
         {facets.brands.map((brand) => (
           <label key={brand} className="filters__option">
             <input
@@ -32,7 +33,7 @@ export default function FilterSidebar({ facets, filters, onChange }) {
         ))}
       </FilterGroup>
 
-      <FilterGroup title="Style">
+      <FilterGroup title="Estilo">
         {facets.styles.map((style) => (
           <label key={style} className="filters__option">
             <input
@@ -40,7 +41,7 @@ export default function FilterSidebar({ facets, filters, onChange }) {
               checked={filters.style?.split(",").includes(style) || false}
               onChange={() => toggleMulti("style", style)}
             />
-            {style}
+            {STYLE_LABELS[style] || style}
           </label>
         ))}
       </FilterGroup>
@@ -73,18 +74,18 @@ export default function FilterSidebar({ facets, filters, onChange }) {
         ))}
       </FilterGroup>
 
-      <FilterGroup title="Price">
+      <FilterGroup title="Precio">
         <div className="filters__price-row">
           <input
             type="number"
-            placeholder={`$${facets.priceRange.min}`}
+            placeholder={`Bs ${facets.priceRange.min}`}
             value={filters.minPrice || ""}
             onChange={(e) => onChange({ ...filters, minPrice: e.target.value })}
           />
           <span>–</span>
           <input
             type="number"
-            placeholder={`$${facets.priceRange.max}`}
+            placeholder={`Bs ${facets.priceRange.max}`}
             value={filters.maxPrice || ""}
             onChange={(e) => onChange({ ...filters, maxPrice: e.target.value })}
           />

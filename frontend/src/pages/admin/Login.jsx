@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import './admin.css';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import "./admin.css";
 
 export default function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const { login } = useAuth();
@@ -17,9 +17,9 @@ export default function Login() {
     setSubmitting(true);
     try {
       await login(username, password);
-      navigate('/admin');
+      navigate("/admin");
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.message || "Login failed");
     } finally {
       setSubmitting(false);
     }
@@ -28,18 +28,28 @@ export default function Login() {
   return (
     <div className="admin-login">
       <form className="admin-login__card" onSubmit={handleSubmit}>
-        <h1>Admin Access</h1>
+        <h1>Acceso a Administración</h1>
         <label>
           Username
-          <input value={username} onChange={(e) => setUsername(e.target.value)} required autoFocus />
+          <input
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+            autoFocus
+          />
         </label>
         <label>
           Password
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
         </label>
         {error && <p className="admin-login__error">{error}</p>}
         <button className="btn btn-accent" type="submit" disabled={submitting}>
-          {submitting ? 'Signing in…' : 'Sign in'}
+          {submitting ? "Signing in…" : "Sign in"}
         </button>
       </form>
     </div>

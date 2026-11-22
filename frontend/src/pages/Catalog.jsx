@@ -26,13 +26,19 @@ export default function Catalog() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   useEffect(() => {
-    fetchFacets().then(setFacets);
+    fetchFacets()
+      .then(setFacets)
+      .catch(() => {});
   }, []);
+
+  const [error, setError] = useState(false);
 
   const load = useCallback(() => {
     setLoading(true);
+    setError(false);
     fetchProducts(filters)
       .then(setData)
+      .catch(() => setError(true))
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams.toString()]);
@@ -55,7 +61,9 @@ export default function Catalog() {
       <div className="catalog__header">
         <h1>Balmora - Sneakers</h1>
         <p>
-          {loading ? "Loading…" : `${data.totalResults} zapatillas encontradas`}
+          {loading
+            ? "Cargando…"
+            : `${data.totalResults} zapatillas encontradas`}
         </p>
 
         {/* Feature #4: sort control — the backend already supports "sort",
@@ -66,11 +74,11 @@ export default function Catalog() {
           onChange={(e) =>
             handleFilterChange({ ...filters, sort: e.target.value })
           }
-          aria-label="Sort products"
+          aria-label="Ordenar productos"
         >
-          <option value="newest">Newest</option>
-          <option value="price_asc">Price: low to high</option>
-          <option value="price_desc">Price: high to low</option>
+          <option value="newest">Más nuevos</option>
+          <option value="price_asc">Precio: menor a mayor</option>
+          <option value="price_desc">Precio: mayor a menor</option>
         </select>
 
         <button
@@ -102,8 +110,19 @@ export default function Catalog() {
         </div>
 
         <div className="catalog__grid">
-          {!loading && data.products.length === 0 && (
-            <p>No se encontraron zapatillas que coincidan con esos filtros.</p>
+          {error && (
+            <p style={{ gridColumn: "1 / -1" }}>
+              El servidor está tardando en responder. Inténtalo de nuevo en unos
+              segundos.{" "}
+              <button className="btn btn-outline" onClick={load}>
+                Reintentar
+              </button>
+            </p>
+          )}
+          {!loading && !error && data.products.length === 0 && (
+            <p style={{ gridColumn: "1 / -1" }}>
+              No se encontraron zapatillas que coincidan con esos filtros.
+            </p>
           )}
           {data.products.map((product) => (
             <ProductCard key={product._id} product={product} />

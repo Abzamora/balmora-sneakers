@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import './ImageGallery.css';
+import { useRef, useState } from "react";
+import "./ImageGallery.css";
 
 /**
  * Main image + thumbnail rail, with a magnifying hover-zoom on desktop
@@ -12,6 +12,17 @@ export default function ImageGallery({ images }) {
   const [zoomStyle, setZoomStyle] = useState({});
   const frameRef = useRef(null);
   const active = images[activeIndex];
+
+  const ANGLE_LABELS = {
+    front: "Frente",
+    side: "Lateral",
+    back: "Trasera",
+    top: "Superior",
+    sole: "Suela",
+    detail: "Detalle",
+    lifestyle: "Ambiente",
+    box: "Caja",
+  };
 
   function handleMouseMove(e) {
     const frame = frameRef.current;
@@ -36,20 +47,27 @@ export default function ImageGallery({ images }) {
       >
         <img src={active.url} alt={`${active.angle} view`} />
         {/* Zoom layer: same image, magnified, revealed only under the cursor via CSS mask-free crop trick */}
-        <div className="gallery__zoom-layer" style={{ ...zoomStyle, backgroundSize: '220%' }} />
+        <div
+          className="gallery__zoom-layer"
+          style={{ ...zoomStyle, backgroundSize: "200%" }}
+        />
       </div>
 
-      <div className="gallery__thumbs" role="tablist" aria-label="Product angles">
+      <div
+        className="gallery__thumbs"
+        role="tablist"
+        aria-label="Ángulos del producto"
+      >
         {images.map((img, i) => (
           <button
             key={img.publicId}
             role="tab"
             aria-selected={i === activeIndex}
-            className={`gallery__thumb ${i === activeIndex ? 'is-active' : ''}`}
+            className={`gallery__thumb ${i === activeIndex ? "is-active" : ""}`}
             onClick={() => setActiveIndex(i)}
           >
             <img src={img.url} alt={`${img.angle} thumbnail`} />
-            <span className="gallery__thumb-label">{img.angle}</span>
+            {ANGLE_LABELS[img.angle] || img.angle}
           </button>
         ))}
       </div>

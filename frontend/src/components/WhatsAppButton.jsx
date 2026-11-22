@@ -48,9 +48,10 @@ export default function WhatsAppButton({
       target="_blank"
       rel="noopener noreferrer"
       onClick={(e) => e.stopPropagation()} // don't also trigger a parent card's onClick
-      aria-label={`Contact via WhatsApp about ${product.name}`}
+      aria-label={`Contactar por WhatsApp sobre ${product.name}`}
     >
-      {label || (variant === "buy" ? "Buy via WhatsApp" : "Ask on WhatsApp")}
+      {label ||
+        (variant === "buy" ? "Comprar por WhatsApp" : "Preguntar por WhatsApp")}
     </a>
   );
 }

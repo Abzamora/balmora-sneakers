@@ -7,6 +7,7 @@ import {
   uploadProductImages,
   deleteProductImage,
 } from "../../api/api";
+import { STYLE_LABELS } from "../../utils/labels";
 import "./admin.css";
 
 const BRANDS = [
@@ -30,14 +31,12 @@ const STYLES = [
   "Boots",
 ];
 const ANGLES = [
-  "front",
-  "side",
-  "back",
-  "top",
-  "sole",
-  "detail",
-  "lifestyle",
-  "box",
+  { value: "front", label: "Frente" },
+  { value: "side", label: "Lateral" },
+  { value: "back", label: "Trasera" },
+  { value: "top", label: "Superior" },
+  { value: "sole", label: "Suela" },
+  { value: "detail", label: "Detalle" },
 ];
 
 const emptyProduct = {
@@ -251,7 +250,11 @@ export default function ProductForm() {
   }
 
   return (
-    <form className="container product-form" onSubmit={handleSubmit}>
+    <form
+      className="container product-form"
+      onSubmit={handleSubmit}
+      translate="no"
+    >
       <h1>{isNew ? "New sneaker" : "Edit sneaker"}</h1>
 
       <label>
@@ -279,7 +282,9 @@ export default function ProductForm() {
             onChange={(e) => updateField("brand", e.target.value)}
           >
             {BRANDS.map((b) => (
-              <option key={b}>{b}</option>
+              <option key={b} value={b}>
+                {b}
+              </option>
             ))}
           </select>
         </label>
@@ -293,7 +298,9 @@ export default function ProductForm() {
             onChange={(e) => updateField("style", e.target.value)}
           >
             {STYLES.map((s) => (
-              <option key={s}>{s}</option>
+              <option key={s} value={s}>
+                {STYLE_LABELS[s]}
+              </option>
             ))}
           </select>
         </label>
@@ -436,7 +443,9 @@ export default function ProductForm() {
                 }}
               >
                 {ANGLES.map((a) => (
-                  <option key={a}>{a}</option>
+                  <option key={a.value} value={a.value}>
+                    {a.label}
+                  </option>
                 ))}
               </select>
             </div>

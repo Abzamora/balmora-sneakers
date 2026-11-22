@@ -21,7 +21,7 @@ export default function FeaturedStrip() {
 
   return (
     <section className="featured-strip">
-      <h2 className="featured-strip__title">Featured this week</h2>
+      <h2 className="featured-strip__title">Destacados de la semana</h2>
       <div className="featured-strip__scroll">
         {featured.map((p) => (
           <div className="featured-strip__item" key={p._id}>

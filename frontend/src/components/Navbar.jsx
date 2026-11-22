@@ -22,15 +22,15 @@ export default function Navbar() {
         <form className="navbar__search" onSubmit={handleSubmit} role="search">
           <input
             type="search"
-            placeholder="Search sneakers, brands..."
+            placeholder="Buscar zapatillas, marcas..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            aria-label="Search sneakers"
+            aria-label="Buscar zapatillas"
           />
         </form>
         <nav className="navbar__links">
           <Link to="/sneakers">Catálogo</Link>
-          <Link to="/favoritos">{`♥ Favorites${slugs.length > 0 ? ` (${slugs.length})` : ""}`}</Link>
+          <Link to="/favoritos">{`♥ Favoritos${slugs.length > 0 ? ` (${slugs.length})` : ""}`}</Link>
         </nav>
       </div>
     </header>
